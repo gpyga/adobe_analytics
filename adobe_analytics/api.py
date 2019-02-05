@@ -9,12 +9,16 @@ class OmnitureApi:
         self._session = session
     
     @classmethod
-    def init(cls, company=None, username=None, password=None, 
-             api_version=None, proxies=None, timeout=None):
+    def init(cls, username=None, secret=None, company=None, 
+             proxies=None, timeout=None):
         
         session = OmnitureSession(
-                company, username, password, 
-                api_version, proxies, timeout)
+                username=username, 
+                secret=secret, 
+                company=company, 
+                proxies=proxies, 
+                timeout=timeout
+            )
         api = cls(session)
         cls.set_default_api(api)
         
@@ -22,24 +26,15 @@ class OmnitureApi:
 
     @classmethod
     def from_json(cls, filepath, 
-                  api_version=None, proxies=None, timeout=None):
+                  proxies=None, timeout=None):
         with open(filepath, mode='r') as f:
             j = json.load(f)
         company = j['company']
         username = j['username']
-        password = j['password']
+        secret = j['secret']
 
-        return cls.init(company, username, password, 
-                        api_version, proxies, timeout)
-
-    @classmethod
-    def from_string(cls, credentials, 
-                    api_version=None, proxies=None, timeout=None):
-        [user, password] = credentials.split(':', 1)
-        [company, username] = user.split('//', 1)
-
-        return cls.init(company, username, password, 
-                        api_version, proxies, timeout)
+        return cls.init(username, secret, company,
+                        proxies, timeout)
 
     @classmethod
     def set_default_api(cls, api):
