@@ -1,5 +1,4 @@
 from adobe_analytics.session import OmnitureSession
-from adobe_analytics.config import API_VERSION, PAGE_SIZE
 
 import json
 from warnings import warn

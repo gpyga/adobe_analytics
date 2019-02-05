@@ -5,8 +5,8 @@ from base64 import b64encode
 import hashlib
 import datetime
 
-from adobe_analytics.config import LOGIN_URL
-from adobe_analytics.exceptions import AuthorizationError
+from adobe_analytics.config import BASE_URL
+from adobe_analytics.exceptions import ApiError
 from adobe_analytics.adapters import SSLContextAdapter
 
 class OmnitureSession:
@@ -58,8 +58,8 @@ class OmnitureSession:
         digest = b64encode(sha.digest()).decode()
         b64nonce = b64encode(nonce.encode()).decode()
 
-        header = 'UsernameToken Username="{username}", '
-                 'PasswordDigest="{digest}", '
+        header = 'UsernameToken Username="{username}", '\
+                 'PasswordDigest="{digest}", '\
                  'Nonce="{nonce}", Created="{created}"'
         header = header.format(
             username=self.username, 
