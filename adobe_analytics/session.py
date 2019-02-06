@@ -61,7 +61,7 @@ class OmnitureSession:
         b64nonce = b64encode(nonce.encode()).decode()
 
         header = 'UsernameToken Username="{username}", '\
-                 'secretDigest="{digest}", '\
+                 'PasswordDigest="{digest}", '\
                  'Nonce="{nonce}", Created="{created}"'
         header = header.format(
             username=self.username, 
