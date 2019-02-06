@@ -44,47 +44,32 @@ class OmnitureApi:
     def get_default_api(cls):
         return cls._default_api
 
-    def call(self, method, path, api_type, params=None):
-        url_prefix = self._session.api_urls[api_type]
-        if not isinstance(path, str):
-            url = '/'.join((
-                url_prefix.strip('/'), 
-                '/'.join(map(str, path))
-            )).strip('/')
+    def call(self, method, params=None):
+        url = self._session.base_url
+        json = params or {}
         
-        # Ensure correct parameters are set
-        if method in ['GET', 'DELETE']:
-            params = params or {}
-            json = {}
-        else:
-            json = params or {}
-            params = {}
-
         response = self._session.session.request(
-            method=method, url=url, params=params, json=json,
+            method=method, url=url, json=json,
+            headers=self._session.default_headers,
             timeout=self._session.timeout
         )
 
         response.raise_for_status()
 
-        return response 
+        return response
 
 class OmnitureRequest:
-    def __init__(self, method, endpoint, api_type=None,
-                 obj_id=None, api=None):
+    def __init__(self, method, api=None):
         self._api = api or OmnitureApi.get_default_api()
         self._method = method
-        self._endpoint = list(filter(None, endpoint.split('/')))
-        self._id = obj_id or ''
-        self._api_type = (api_type or 'REST').upper()
-        self._path = self._endpoint + [self._id]
-        self._params = {}
+        self._endpoint = self._api.base_url
+        self._json = {'method': self._method}
 
     def add_params(self, params):
         if params:
             for key, value in params.items():
                 # add method for validating parameters
-                self._params[key] = value
+                self._json[key] = value
 
         return self
         

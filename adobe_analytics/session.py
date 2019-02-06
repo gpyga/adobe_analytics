@@ -37,7 +37,8 @@ class OmnitureSession:
         
         # Ensure successful login
         response = self.session.get(
-            BASE_URL+'/?method=Company.GetEndpoint',
+            BASE_URL,
+            params={'method':'Company.GetEndpoint'},
             headers=self.default_headers)
 
         response.raise_for_status()
