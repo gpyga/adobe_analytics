@@ -7,7 +7,6 @@ from datetime import datetime
 
 from adobe_analytics.config import BASE_URL
 from adobe_analytics.exceptions import ApiError
-from adobe_analytics.adapters import SSLContextAdapter
 
 class OmnitureSession:
     def __init__(self, username=None, secret=None, company=None,
@@ -21,19 +20,10 @@ class OmnitureSession:
             self.username = username
 
         self._secret = secret
-        self.proxies = proxies
         self.timeout = timeout
         self.session = Session()
 
         self.default_headers = self._generate_wsse_header()
-
-        if self.proxies:
-            self.session.proxies.update(self.proxies)
-        
-        # Get SSL Context from OS defaults
-        adapter = SSLContextAdapter()
-        # Set connection adapters to only accept login by default
-        self.session.mount(BASE_URL, adapter)
         
         # Ensure successful login
         response = self.session.get(
@@ -54,7 +44,7 @@ class OmnitureSession:
         # Adapted from Adobe's analytics-1.4-apis documentation
         # docs/authentication/using_web_service_credentials.md
         nonce = str(uuid4())
-        created = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S z')
+        created = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%SZ')
 
         sha = sha1((nonce + created + self._secret).encode())
         digest = b64encode(sha.digest()).decode()
