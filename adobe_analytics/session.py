@@ -22,14 +22,13 @@ class OmnitureSession:
         self._secret = secret
         self.timeout = timeout
         self.session = Session()
-
-        self.default_headers = self._generate_wsse_header()
         
         # Ensure successful login
         response = self.session.get(
             BASE_URL,
             params={'method':'Company.GetEndpoint'},
-            headers=self.default_headers)
+            headers=self.gnerate_wsse_header()
+        )
 
         response.raise_for_status()
 
@@ -40,11 +39,11 @@ class OmnitureSession:
         else:
             self.base_url = r
     
-    def _generate_wsse_header(self):
+    def gnerate_wsse_header(self):
         # Adapted from Adobe's analytics-1.4-apis documentation
         # docs/authentication/using_web_service_credentials.md
         nonce = str(uuid4())
-        created = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%SZ')
+        created = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S z')
 
         sha = sha1((nonce + created + self._secret).encode())
         digest = b64encode(sha.digest()).decode()
