@@ -27,7 +27,7 @@ class OmnitureSession:
         response = self.session.get(
             BASE_URL,
             params={'method':'Company.GetEndpoint'},
-            headers=self.gnerate_wsse_header()
+            headers=self.generate_wsse_header()
         )
 
         response.raise_for_status()
