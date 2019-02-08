@@ -39,7 +39,7 @@ class OmnitureSession:
         else:
             self.base_url = r
     
-    def gnerate_wsse_header(self):
+    def generate_wsse_header(self):
         # Adapted from Adobe's analytics-1.4-apis documentation
         # docs/authentication/using_web_service_credentials.md
         nonce = str(uuid4())
